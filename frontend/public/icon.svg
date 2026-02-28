@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+    <!-- Background Gradient -->
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4f46e5" />
+            <stop offset="100%" stop-color="#7c3aed" />
+        </linearGradient>
+    </defs>
+    
+    <!-- Rounded Background Rect -->
+    <rect width="512" height="512" rx="112" fill="url(#bg)" />
+    
+    <!-- Dashboard Icon (scaled up to fit the 512x512 canvas) -->
+    <g transform="translate(100, 100) scale(13)">
+        <path fill="#ffffff" d="M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z" />
+    </g>
+</svg>
