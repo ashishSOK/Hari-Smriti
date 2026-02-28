@@ -9,6 +9,7 @@ module.exports = {
             env: {
                 NODE_ENV: 'development',
                 PORT: 5002,
+                TZ: 'Asia/Kolkata'
             },
             restart_delay: 2000,
             max_restarts: 10,
