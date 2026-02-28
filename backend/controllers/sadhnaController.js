@@ -8,6 +8,8 @@ import { startOfWeek, endOfWeek, startOfDay, endOfDay, addDays, format } from 'd
 export const createOrUpdateEntry = async (req, res) => {
     try {
         const {
+            id,
+            _id,
             date,
             wakeUpTime,
             sleepTime,
@@ -21,13 +23,21 @@ export const createOrUpdateEntry = async (req, res) => {
             studyTopic
         } = req.body;
 
+        const entryId = id || _id;
         const entryDate = startOfDay(new Date(date));
 
-        // Check if entry already exists for this user and date
-        let entry = await SadhnaEntry.findOne({
-            userId: req.user._id,
-            date: entryDate
-        });
+        // Check if entry already exists by ID first, then fallback to user and date
+        let entry;
+        if (entryId) {
+            entry = await SadhnaEntry.findOne({ _id: entryId, userId: req.user._id });
+        }
+
+        if (!entry) {
+            entry = await SadhnaEntry.findOne({
+                userId: req.user._id,
+                date: entryDate
+            });
+        }
 
         if (entry) {
             // Update existing entry
