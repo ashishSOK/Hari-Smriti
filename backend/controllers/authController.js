@@ -111,13 +111,26 @@ export const getMe = async (req, res) => {
 // @access  Private
 export const updateProfile = async (req, res) => {
     try {
-        const { name, phone, devoteeType } = req.body;
+        const { name, phone, devoteeType, mentorIds } = req.body;
         const user = await User.findById(req.user._id);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         if (name) user.name = name.trim();
         if (phone) user.phone = phone.trim();
         if (user.role === 'devotee' && devoteeType) user.devoteeType = devoteeType;
+
+        // Allow overriding the entire mentor array
+        if (user.role === 'devotee' && mentorIds !== undefined) {
+            const mIds = Array.isArray(mentorIds) ? mentorIds : [];
+            // Optional: Verify mentors exist if array is not empty
+            if (mIds.length > 0) {
+                const mentors = await User.find({ _id: { $in: mIds }, role: 'mentor' });
+                if (mentors.length !== mIds.length) {
+                    return res.status(400).json({ message: 'One or more invalid mentor IDs provided' });
+                }
+            }
+            user.mentorId = mIds;
+        }
 
         await user.save();
 
