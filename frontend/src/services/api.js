@@ -51,7 +51,7 @@ export const sadhnaAPI = {
     createOrUpdate: (data) => api.post('/sadhna', data),
     getMyEntries: (params) => api.get('/sadhna/my-entries', { params }),
     getDevoteesEntries: (params) => api.get('/sadhna/devotees-entries', { params }),
-    getWeeklyWinner: () => api.get('/sadhna/weekly-winner'),
+    getWeeklyWinner: (params) => api.get('/sadhna/weekly-winner', { params }),
     getMonthlyWinner: (params) => api.get('/sadhna/monthly-winner', { params }),
     getDevoteeHistory: (userId) => api.get(`/sadhna/devotee-history/${userId}`),
     deleteEntry: (id) => api.delete(`/sadhna/${id}`),
@@ -62,6 +62,15 @@ export const sadhnaAPI = {
     getPeerDevotees: () => api.get('/sadhna/peer-devotees'),
     getPeerDevoteesEntries: (params) => api.get('/sadhna/peer-entries', { params }),
     getPeerDevoteeHistory: (userId) => api.get(`/sadhna/peer-history/${userId}`),
+};
+
+// Push Notification API
+export const pushAPI = {
+    getVapidKey: () => api.get('/push/vapid-public-key'),
+    subscribe: (subscriptionData) => api.post('/push/subscribe', subscriptionData),
+    unsubscribe: () => api.delete('/push/unsubscribe'),
+    sendManualPush: () => api.post('/push/send-manual'),
+    getMissingTodayCount: () => api.get('/push/missing-today-count'),
 };
 
 export default api;

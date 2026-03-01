@@ -140,9 +140,10 @@ export const getDevoteesEntries = async (req, res) => {
 // @access  Private (Mentor only)
 export const getWeeklyWinner = async (req, res) => {
     try {
-        const today = new Date();
-        const weekStart = startOfWeek(today, { weekStartsOn: 1 }); // Monday
-        const weekEnd = endOfWeek(today, { weekStartsOn: 1 });     // Sunday
+        const { weekStart: weekStartParam } = req.query;
+        const baseDate = weekStartParam ? new Date(weekStartParam) : new Date();
+        const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 }); // Monday
+        const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });     // Sunday
 
         // Get ALL devotees under this mentor (including those with 0 entries)
         const devotees = await User.find({ mentorId: req.user._id });
