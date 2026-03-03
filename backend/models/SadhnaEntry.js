@@ -62,6 +62,17 @@ const sadhnaEntrySchema = new mongoose.Schema({
             message: 'Rounds must be a whole number'
         }
     },
+    daySleepDuration: {
+        type: Number,
+        default: 0,
+        min: [0, 'Day sleep duration cannot be negative'],
+        validate: {
+            validator: function (value) {
+                return value >= 0 && value <= 24; // Max 24 hours
+            },
+            message: 'Day sleep duration must be between 0 and 24 hours'
+        }
+    },
     bookName: {
         type: String,
         required: [true, 'Book name is required'],
@@ -148,7 +159,7 @@ sadhnaEntrySchema.pre('save', function (next) {
         (this.readingDuration * 0.5) +        // 0.5 points per minute of reading
         (this.serviceDuration * 20) +         // 20 points per hour of service
         (this.hearingDuration * 15) +         // 15 points per hour of hearing
-        (this.studyDuration * 10) +           // 10 points per hour of study (students)
+        (this.studyDuration * 20) +           // 20 points per hour of study (students)
         (this.wakeUpTime <= '04:00' ? 50 : 0); // Bonus 50 points for waking before 4 AM
 
     next();

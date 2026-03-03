@@ -98,6 +98,7 @@ const Dashboard = () => {
         text += `⭐ *Score:* ${Math.round(entry.totalScore)}\n`;
         text += `⏰ *Wake Up:* ${entry.wakeUpTime || 'N/A'}\n`;
         text += `🛏️ *Sleep:* ${entry.sleepTime || 'N/A'}\n`;
+        text += `😴 *Day Sleep:* ${entry.daySleepDuration || 0} hrs\n`;
         text += `📿 *Rounds:* ${entry.roundsChanted}\n`;
         text += `📖 *Reading:* ${entry.readingDuration} mins\n`;
         if (entry.bookName) text += `📚 *Book:* ${entry.bookName}\n`;

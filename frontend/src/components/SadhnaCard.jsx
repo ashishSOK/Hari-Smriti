@@ -18,6 +18,7 @@ const MobileCard = ({ entry, showUserName, onDelete, onEdit, onShare }) => {
     const stats = [
         { emoji: '⏰', label: 'Wake', value: entry.wakeUpTime || 'N/A' },
         { emoji: '🌙', label: 'Sleep', value: entry.sleepTime || 'N/A' },
+        { emoji: '😴', label: 'Day Sleep', value: `${entry.daySleepDuration || 0}h` },
         { emoji: '📿', label: 'Rounds', value: entry.roundsChanted },
         { emoji: '📖', label: 'Reading', value: `${entry.readingDuration}m` },
         { emoji: '🤝', label: 'Service', value: `${entry.serviceDuration}h` },
@@ -194,27 +195,39 @@ const DesktopCard = ({ entry, showUserName, onDelete, onEdit, onShare }) => {
                     {[
                         { icon: <WakeIcon sx={{ color: '#FFA726' }} />, label: 'Wake up', value: formatTime(entry.wakeUpTime) },
                         { icon: <SleepIcon sx={{ color: '#5C6BC0' }} />, label: 'Slept at', value: formatTime(entry.sleepTime) },
+                        { icon: <SleepIcon sx={{ color: '#9FA8DA' }} />, label: 'Day Sleep', value: `${entry.daySleepDuration || 0} hrs` },
                         { icon: <RoundsIcon sx={{ color: '#FFD700' }} />, label: 'Rounds chanted', value: entry.roundsChanted },
                         { icon: <BookIcon sx={{ color: '#66BB6A' }} />, label: 'Book', value: entry.bookName },
                         { icon: <BookIcon sx={{ color: '#42A5F5' }} />, label: 'Reading', value: `${entry.readingDuration} min` },
-                        { icon: <ServiceIcon sx={{ color: '#AB47BC' }} />, label: 'Service', value: `${entry.serviceDuration} hrs` },
-                    ].map(({ icon, label, value }) => (
-                        <Grid item xs={12} sm={6} key={label}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                                {icon}
-                                <Typography variant="body2" color="text.secondary">
-                                    <strong>{label}:</strong> {value}
-                                </Typography>
-                            </Box>
-                        </Grid>
-                    ))}
-                    {entry.serviceType && (
-                        <Grid item xs={12}>
-                            <Typography variant="body2" color="text.secondary">
-                                <strong>Service Type:</strong> {entry.serviceType}
-                            </Typography>
-                        </Grid>
-                    )}
+                        {
+                            icon: <ServiceIcon sx={{ color: '#AB47BC' }} />,
+                            label: 'Service',
+                            value: `${entry.serviceDuration} hrs`
+                        },
+                        {
+                            icon: null,
+                            label: 'Service Type',
+                            value: entry.serviceType,
+                            hide: !entry.serviceType || entry.serviceType === 'None'
+                        }
+                    ]
+                        .filter(item => !item.hide)
+                        .map(({ icon, label, value }) => (
+                            <Grid item xs={12} sm={6} key={label}>
+                                {icon ? (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                                        {icon}
+                                        <Typography variant="body2" color="text.secondary">
+                                            <strong>{label}:</strong> {value}
+                                        </Typography>
+                                    </Box>
+                                ) : (
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+                                        <strong>{label}:</strong> {value}
+                                    </Typography>
+                                )}
+                            </Grid>
+                        ))}
                     <Grid item xs={12}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <HearingIcon sx={{ color: '#26A69A' }} />

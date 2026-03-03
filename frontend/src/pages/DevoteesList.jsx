@@ -36,7 +36,8 @@ const calcSleepHrs = (wakeUp, sleep) => {
 /* ── Entry card ─────────────────────────────────────────────────── */
 const EntryCard = ({ entry }) => {
     const perf = perfLevel(entry.totalScore);
-    const sleepH = calcSleepHrs(entry.wakeUpTime, entry.sleepTime);
+    const baseSleep = calcSleepHrs(entry.wakeUpTime, entry.sleepTime);
+    const sleepH = baseSleep !== null ? Math.round((baseSleep + (entry.daySleepDuration || 0)) * 10) / 10 : null;
 
     const stats = [
         { label: '⏰ Wake', val: entry.wakeUpTime, ok: entry.wakeUpTime <= '04:00' },

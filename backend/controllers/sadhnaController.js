@@ -19,6 +19,7 @@ export const createOrUpdateEntry = async (req, res) => {
             serviceDuration,
             serviceType,
             hearingDuration,
+            daySleepDuration,
             studyDuration,
             studyTopic
         } = req.body;
@@ -49,6 +50,7 @@ export const createOrUpdateEntry = async (req, res) => {
             entry.serviceDuration = serviceDuration;
             entry.serviceType = serviceType;
             entry.hearingDuration = hearingDuration;
+            entry.daySleepDuration = daySleepDuration || 0;
             entry.studyDuration = studyDuration || 0;
             entry.studyTopic = studyTopic || '';
 
@@ -68,6 +70,7 @@ export const createOrUpdateEntry = async (req, res) => {
                 serviceDuration,
                 serviceType,
                 hearingDuration,
+                daySleepDuration: daySleepDuration || 0,
                 studyDuration: studyDuration || 0,
                 studyTopic: studyTopic || ''
             });
@@ -187,7 +190,7 @@ export const getWeeklyWinner = async (req, res) => {
             if (daysSubmitted > 0) {
                 const totalSleep = data.entries.reduce((s, e) => {
                     const h = calcSleepHrs(e.wakeUpTime, e.sleepTime);
-                    return h !== null ? s + h : s;
+                    return h !== null ? s + h + (e.daySleepDuration || 0) : s;
                 }, 0);
                 avgStats = {
                     avgSleepHrs: Math.round((totalSleep / daysSubmitted) * 10) / 10,
@@ -469,7 +472,7 @@ export const getMonthlyWinner = async (req, res) => {
             if (daysSubmitted > 0) {
                 const totalSleep = data.entries.reduce((s, e) => {
                     const h = calcSleepHrs(e.wakeUpTime, e.sleepTime);
-                    return h !== null ? s + h : s;
+                    return h !== null ? s + h + (e.daySleepDuration || 0) : s;
                 }, 0);
                 avgStats = {
                     avgSleepHrs: Math.round((totalSleep / daysSubmitted) * 10) / 10,

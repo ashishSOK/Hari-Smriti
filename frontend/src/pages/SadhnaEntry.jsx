@@ -65,6 +65,7 @@ const SadhnaEntry = () => {
         date: editData ? new Date(editData.date) : new Date(),
         wakeUpTime: editData?.wakeUpTime || '',
         sleepTime: editData?.sleepTime || '',
+        daySleepDuration: editData?.daySleepDuration || '',
         roundsChanted: editData?.roundsChanted || '',
         bookName: editData?.bookName || 'Śrīmad-Bhāgavatam',
         readingDuration: editData?.readingDuration || '',
@@ -84,6 +85,7 @@ const SadhnaEntry = () => {
         const errors = {};
         if (touched.wakeUpTime) errors.wakeUpTime = validators.time(formData.wakeUpTime).error;
         if (touched.sleepTime) errors.sleepTime = validators.time(formData.sleepTime).error;
+        if (touched.daySleepDuration && formData.daySleepDuration !== '') errors.daySleepDuration = validators.number(formData.daySleepDuration, 0, 24, 'Day sleep').error;
         if (touched.roundsChanted) errors.roundsChanted = validators.number(formData.roundsChanted, 0, 64, 'Rounds').error;
         if (touched.readingDuration) errors.readingDuration = validators.number(formData.readingDuration, 0, 600, 'Reading duration').error;
         if (touched.serviceDuration) errors.serviceDuration = validators.number(formData.serviceDuration, 0, 24, 'Service duration').error;
@@ -104,12 +106,13 @@ const SadhnaEntry = () => {
     const isFormValid = () => {
         const wakeUpValid = validators.time(formData.wakeUpTime).isValid;
         const sleepValid = validators.time(formData.sleepTime).isValid;
+        const daySleepValid = formData.daySleepDuration === '' || validators.number(formData.daySleepDuration, 0, 24).isValid;
         const roundsValid = validators.number(formData.roundsChanted, 0, 64).isValid;
         const readingValid = validators.number(formData.readingDuration, 0, 600).isValid;
         const serviceValid = validators.number(formData.serviceDuration, 0, 24).isValid;
         const hearingValid = validators.number(formData.hearingDuration, 0, 24).isValid;
         const studyValid = !isStudent || validators.number(formData.studyDuration, 0, 24).isValid;
-        return wakeUpValid && sleepValid && roundsValid && readingValid && serviceValid && hearingValid && studyValid;
+        return wakeUpValid && sleepValid && daySleepValid && roundsValid && readingValid && serviceValid && hearingValid && studyValid;
     };
 
     const handleSubmit = async (e) => {
@@ -117,7 +120,7 @@ const SadhnaEntry = () => {
         setError('');
         setSuccess('');
 
-        const touchedFields = { wakeUpTime: true, sleepTime: true, roundsChanted: true, readingDuration: true, serviceDuration: true, hearingDuration: true };
+        const touchedFields = { wakeUpTime: true, sleepTime: true, daySleepDuration: true, roundsChanted: true, readingDuration: true, serviceDuration: true, hearingDuration: true };
         if (isStudent) touchedFields.studyDuration = true;
         setTouched(touchedFields);
 
@@ -133,6 +136,7 @@ const SadhnaEntry = () => {
                 readingDuration: parseFloat(formData.readingDuration),
                 serviceDuration: parseFloat(formData.serviceDuration),
                 hearingDuration: parseFloat(formData.hearingDuration),
+                daySleepDuration: formData.daySleepDuration ? parseFloat(formData.daySleepDuration) : 0,
                 studyDuration: isStudent ? parseFloat(formData.studyDuration || 0) : 0,
                 studyTopic: isStudent ? formData.studyTopic : ''
             };
@@ -209,6 +213,18 @@ const SadhnaEntry = () => {
                                     error={touched.sleepTime && !!fieldErrors.sleepTime}
                                     helperText={touched.sleepTime && fieldErrors.sleepTime}
                                     InputProps={{ endAdornment: showSuccessIcon('sleepTime') && <InputAdornment position="end"><CheckCircle sx={{ color: '#4caf50' }} /></InputAdornment> }}
+                                />
+                            </Grid>
+
+                            {/* Day Sleep Duration */}
+                            <Grid item xs={6}>
+                                <TextField fullWidth label="Day Sleep (hours)" name="daySleepDuration" type="number"
+                                    value={formData.daySleepDuration} onChange={handleChange} onBlur={() => handleBlur('daySleepDuration')}
+                                    inputProps={{ min: 0, max: 24, step: 0.5 }}
+                                    color={getFieldColor('daySleepDuration')}
+                                    error={touched.daySleepDuration && !!fieldErrors.daySleepDuration}
+                                    helperText={touched.daySleepDuration && fieldErrors.daySleepDuration}
+                                    InputProps={{ endAdornment: showSuccessIcon('daySleepDuration') && <InputAdornment position="end"><CheckCircle sx={{ color: '#4caf50' }} /></InputAdornment> }}
                                 />
                             </Grid>
 
