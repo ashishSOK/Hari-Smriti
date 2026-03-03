@@ -34,6 +34,7 @@ const ASPECT_META = {
     Reading: { emoji: '📖', color: '#0369a1', bg: '#e0f2fe', border: '#7dd3fc' },
     Hearing: { emoji: '🎧', color: '#d97706', bg: '#fef3c7', border: '#fcd34d' },
     Service: { emoji: '🙏', color: '#16a34a', bg: '#dcfce7', border: '#86efac' },
+    Study: { emoji: '🎓', color: '#be185d', bg: '#fdf2f8', border: '#fbcfe8' },
 };
 
 const SuggestionChips = ({ avgStats }) => {
@@ -48,6 +49,10 @@ const SuggestionChips = ({ avgStats }) => {
         { aspect: 'Hearing', cur: `${avgStats.avgHearingHrs}h`, target: '1h', ok: avgStats.avgHearingHrs >= 1 },
         { aspect: 'Service', cur: `${avgStats.avgServiceHrs}h`, target: '1h', ok: avgStats.avgServiceHrs >= 1 },
     ];
+    if (avgStats.avgStudyHrs > 0) {
+        items.push({ aspect: 'Study', cur: `${avgStats.avgStudyHrs}h`, target: '0h', ok: true });
+    }
+
 
     return (
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
@@ -316,7 +321,7 @@ const WeeklyWinner = () => {
     /* ── Exports ── */
     const buildRows = () => {
         if (!activeData) return { headers: [], rows: [] };
-        const headers = ['Rank', 'Name', 'Email', 'Days', 'Total Score', 'Avg/Day', '😴Sleep', '📖Reading', '🎧Hearing', '🙏Service'];
+        const headers = ['Rank', 'Name', 'Email', 'Days', 'Total Score', 'Avg/Day', '😴Sleep', '📖Reading', '🎧Hearing', '🙏Service', '🎓Study'];
         const rows = activeData.rankings.map((rank, i) => [
             i + 1, rank.user.name, rank.user.email,
             `${rank.daysSubmitted}/${totalDays}`,
@@ -325,6 +330,7 @@ const WeeklyWinner = () => {
             rank.avgStats ? `${rank.avgStats.avgReadingMin}m` : '—',
             rank.avgStats ? `${rank.avgStats.avgHearingHrs}h` : '—',
             rank.avgStats ? `${rank.avgStats.avgServiceHrs}h` : '—',
+            rank.avgStats && rank.avgStats.avgStudyHrs > 0 ? `${rank.avgStats.avgStudyHrs}h` : '—',
         ]);
         return { headers, rows };
     };
@@ -340,7 +346,7 @@ const WeeklyWinner = () => {
         const XLSX = await import('xlsx');
         const { headers, rows } = buildRows();
         const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-        ws['!cols'] = [{ wch: 6 }, { wch: 24 }, { wch: 28 }, { wch: 10 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
+        ws['!cols'] = [{ wch: 6 }, { wch: 24 }, { wch: 28 }, { wch: 10 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, tab === 0 ? 'Weekly' : 'Monthly');
         XLSX.writeFile(wb, `${filename}.xlsx`);
@@ -472,7 +478,7 @@ const WeeklyWinner = () => {
                                     📊 Full Leaderboard
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
-                                    Rounds×10 + Reading×0.5/min + Service×20/hr + Hearing×15/hr + Wake≤4am: +50
+                                    Rounds×10 + Reading×0.5/min + Service×20/hr + Hearing×15/hr + Wake≤4am: +50 + Study×20/hr
                                 </Typography>
                             </Box>
 
@@ -480,7 +486,7 @@ const WeeklyWinner = () => {
 
                             {/* Legend */}
                             <Box sx={{ px: 3, py: 1.5, pb: { xs: '86px', sm: 1.5 }, bgcolor: '#f8faff', borderTop: '1px solid #e8ecf8', display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                                {['Rounds × 10 pts', 'Reading × 0.5/min', 'Service × 20/hr', 'Hearing × 15/hr', 'Wake ≤4am: +50'].map(f => (
+                                {['Rounds × 10 pts', 'Reading × 0.5/min', 'Service × 20/hr', 'Hearing × 15/hr', 'Wake ≤4am: +50', 'Study × 20/hr'].map(f => (
                                     <Chip key={f} label={f} size="small" icon={<StarIcon sx={{ fontSize: '12px !important' }} />}
                                         sx={{ bgcolor: '#eef2ff', color: '#4f46e5', fontWeight: 500, fontSize: '0.72rem' }} />
                                 ))}
