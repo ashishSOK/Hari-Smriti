@@ -58,7 +58,7 @@ const EntryCard = ({ entry }) => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.75 }}>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
                     <Typography sx={{ fontWeight: 700, fontSize: { xs: '0.8rem', sm: '0.9rem' }, color: '#1e293b', wordBreak: 'break-word' }}>
-                        {format(parseISO(entry.date.split('T')[0]), 'EEE, dd MMM yyyy')}
+                        {format(new Date(entry.date), 'EEE, dd MMM yyyy')}
                     </Typography>
                     <Typography variant="caption" sx={{ color: '#64748b', display: 'block' }}>
                         📚 {entry.bookName}

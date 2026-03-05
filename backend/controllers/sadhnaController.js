@@ -1,6 +1,13 @@
 import SadhnaEntry from '../models/SadhnaEntry.js';
 import User from '../models/User.js';
-import { startOfWeek, endOfWeek, startOfDay, endOfDay, addDays, format } from 'date-fns';
+import { startOfWeek, endOfWeek, addDays, format } from 'date-fns';
+
+// Parse a date string (yyyy-MM-dd) as UTC midnight to avoid timezone shifts
+const parseUTCDate = (dateStr) => {
+    // dateStr is expected to be 'yyyy-MM-dd'
+    const d = String(dateStr).split('T')[0]; // strip time if present
+    return new Date(d + 'T00:00:00.000Z');
+};
 
 // @desc    Create or update sadhna entry
 // @route   POST /api/sadhna
@@ -25,7 +32,7 @@ export const createOrUpdateEntry = async (req, res) => {
         } = req.body;
 
         const entryId = id || _id;
-        const entryDate = startOfDay(new Date(date));
+        const entryDate = parseUTCDate(date);
 
         // Check if entry already exists by ID first, then fallback to user and date
         let entry;
@@ -112,8 +119,8 @@ export const getMyEntries = async (req, res) => {
 
         if (startDate && endDate) {
             query.date = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
+                $gte: parseUTCDate(startDate),
+                $lte: parseUTCDate(endDate)
             };
         }
 
@@ -141,7 +148,7 @@ export const getDevoteesEntries = async (req, res) => {
         let query = { userId: { $in: devoteeIds } };
 
         if (date) {
-            const targetDate = startOfDay(new Date(date));
+            const targetDate = parseUTCDate(date);
             query.date = targetDate;
         }
 
@@ -271,7 +278,7 @@ export const deleteEntry = async (req, res) => {
 export const getMissingSubmissions = async (req, res) => {
     try {
         const { date } = req.query;
-        const targetDate = date ? startOfDay(new Date(date)) : startOfDay(new Date());
+        const targetDate = date ? parseUTCDate(date) : parseUTCDate(format(new Date(), 'yyyy-MM-dd'));
 
         // Get all devotees under this mentor
         const devotees = await User.find({ mentorId: req.user._id, isActive: true });
@@ -560,7 +567,7 @@ export const getPeerDevoteesEntries = async (req, res) => {
         let query = { userId: { $in: peerIds } };
 
         if (date) {
-            const targetDate = startOfDay(new Date(date));
+            const targetDate = parseUTCDate(date);
             query.date = targetDate;
         }
 
