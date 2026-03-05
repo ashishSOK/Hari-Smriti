@@ -41,7 +41,25 @@ export const createOrUpdateEntry = async (req, res) => {
         }
 
         if (entry) {
-            // Update existing entry
+            // If the date has changed, check for a conflicting entry on the new date
+            const existingDateStr = entry.date.toISOString().split('T')[0];
+            const newDateStr = entryDate.toISOString().split('T')[0];
+            if (existingDateStr !== newDateStr) {
+                const conflict = await SadhnaEntry.findOne({
+                    userId: req.user._id,
+                    date: entryDate,
+                    _id: { $ne: entry._id }
+                });
+                if (conflict) {
+                    return res.status(400).json({
+                        message: `An entry for ${newDateStr} already exists. Please edit that entry instead.`
+                    });
+                }
+                // Safe to update the date
+                entry.date = entryDate;
+            }
+
+            // Update existing entry fields
             entry.wakeUpTime = wakeUpTime;
             entry.sleepTime = sleepTime;
             entry.roundsChanted = roundsChanted;
