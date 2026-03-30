@@ -223,6 +223,7 @@ export const getWeeklyWinner = async (req, res) => {
                     avgHearingHrs: Math.round((data.entries.reduce((s, e) => s + (e.hearingDuration || 0), 0) / daysSubmitted) * 10) / 10,
                     avgServiceHrs: Math.round((data.entries.reduce((s, e) => s + (e.serviceDuration || 0), 0) / daysSubmitted) * 10) / 10,
                     avgStudyHrs: Math.round((data.entries.reduce((s, e) => s + (e.studyDuration || 0), 0) / daysSubmitted) * 10) / 10,
+                    avgRounds: Math.round((data.entries.reduce((s, e) => s + (e.roundsChanted || 0), 0) / daysSubmitted) * 10) / 10,
                 };
             }
 
@@ -506,6 +507,7 @@ export const getMonthlyWinner = async (req, res) => {
                     avgHearingHrs: Math.round((data.entries.reduce((s, e) => s + (e.hearingDuration || 0), 0) / daysSubmitted) * 10) / 10,
                     avgServiceHrs: Math.round((data.entries.reduce((s, e) => s + (e.serviceDuration || 0), 0) / daysSubmitted) * 10) / 10,
                     avgStudyHrs: Math.round((data.entries.reduce((s, e) => s + (e.studyDuration || 0), 0) / daysSubmitted) * 10) / 10,
+                    avgRounds: Math.round((data.entries.reduce((s, e) => s + (e.roundsChanted || 0), 0) / daysSubmitted) * 10) / 10,
                 };
             }
 

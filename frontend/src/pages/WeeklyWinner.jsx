@@ -30,6 +30,7 @@ const medalColors = [
 const medalEmoji = ['🥇', '🥈', '🥉'];
 
 const ASPECT_META = {
+    Rounds: { emoji: '📿', color: '#0d9488', bg: '#f0fdfa', border: '#5eead4' },
     Sleep: { emoji: '😴', color: '#7c3aed', bg: '#f5f3ff', border: '#c4b5fd' },
     Reading: { emoji: '📖', color: '#0369a1', bg: '#e0f2fe', border: '#7dd3fc' },
     Hearing: { emoji: '🎧', color: '#d97706', bg: '#fef3c7', border: '#fcd34d' },
@@ -44,6 +45,7 @@ const SuggestionChips = ({ avgStats }) => {
     );
 
     const items = [
+        { aspect: 'Rounds', cur: avgStats.avgRounds, target: '16', ok: avgStats.avgRounds >= 16 },
         { aspect: 'Sleep', cur: `${avgStats.avgSleepHrs}h`, target: '≤7h', ok: avgStats.avgSleepHrs <= 7 },
         { aspect: 'Reading', cur: `${avgStats.avgReadingMin}m`, target: '30m', ok: avgStats.avgReadingMin >= 30 },
         { aspect: 'Hearing', cur: `${avgStats.avgHearingHrs}h`, target: '1h', ok: avgStats.avgHearingHrs >= 1 },
@@ -321,11 +323,12 @@ const WeeklyWinner = () => {
     /* ── Exports ── */
     const buildRows = () => {
         if (!activeData) return { headers: [], rows: [] };
-        const headers = ['Rank', 'Name', 'Email', 'Days', 'Total Score', 'Avg/Day', '😴Sleep', '📖Reading', '🎧Hearing', '🙏Service', '🎓Study'];
+        const headers = ['Rank', 'Name', 'Email', 'Days', 'Total Score', 'Avg/Day', 'Avg Rounds', 'Sleep', 'Reading', 'Hearing', 'Service', 'Study'];
         const rows = activeData.rankings.map((rank, i) => [
             i + 1, rank.user.name, rank.user.email,
             `${rank.daysSubmitted}/${totalDays}`,
             Math.round(rank.totalScore), rank.avgScorePerDay,
+            rank.avgStats ? rank.avgStats.avgRounds : '—',
             rank.avgStats ? `${rank.avgStats.avgSleepHrs}h` : '—',
             rank.avgStats ? `${rank.avgStats.avgReadingMin}m` : '—',
             rank.avgStats ? `${rank.avgStats.avgHearingHrs}h` : '—',
@@ -346,7 +349,7 @@ const WeeklyWinner = () => {
         const XLSX = await import('xlsx');
         const { headers, rows } = buildRows();
         const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-        ws['!cols'] = [{ wch: 6 }, { wch: 24 }, { wch: 28 }, { wch: 10 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
+        ws['!cols'] = [{ wch: 6 }, { wch: 24 }, { wch: 28 }, { wch: 10 }, { wch: 14 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, tab === 0 ? 'Weekly' : 'Monthly');
         XLSX.writeFile(wb, `${filename}.xlsx`);
@@ -363,7 +366,7 @@ const WeeklyWinner = () => {
         doc.rect(0, 0, doc.internal.pageSize.width, 22, 'F');
         doc.setTextColor(255, 255, 255);
         doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
-        doc.text(`🏆 Hari Smriti — ${tab === 0 ? 'Weekly' : 'Monthly'} Champions`, 14, 10);
+        doc.text(`Hari Smriti — ${tab === 0 ? 'Weekly' : 'Monthly'} Champions`, 14, 10);
         doc.setFontSize(9); doc.setFont('helvetica', 'normal');
         doc.text(`Period: ${periodLabel}`, 14, 17);
         doc.text(`Generated: ${format(new Date(), 'dd MMM yyyy, hh:mm a')}`, doc.internal.pageSize.width - 14, 17, { align: 'right' });

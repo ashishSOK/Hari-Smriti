@@ -453,7 +453,7 @@ const Attendance = () => {
         doc.setTextColor(255, 255, 255);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(14);
-        doc.text('📅 Hari Smriti — Attendance Report', 14, 10);
+        doc.text('Hari Smriti — Attendance Report', 14, 10);
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         doc.text(`Period: ${tab === 0 ? weekLabel : monthLabel}`, 14, 17);

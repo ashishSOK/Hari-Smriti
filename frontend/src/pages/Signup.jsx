@@ -129,7 +129,10 @@ const Signup = () => {
 
         setLoading(true);
 
-        const result = await register(formData);
+        const result = await register({
+            ...formData,
+            phone: formData.phone.replace(/\s+/g, '')
+        });
 
         if (result.success) {
             navigate('/dashboard');

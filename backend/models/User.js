@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: [true, 'Phone number is required for WhatsApp notifications'],
+        set: v => v ? v.replace(/\s+/g, '') : v,
         match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number with country code']
     },
     role: {
